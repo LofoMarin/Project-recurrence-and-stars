@@ -4,28 +4,27 @@ from model import Modelo
 
 m = Modelo()
 
-
 # --------------------- Comandos -----------------------------
-
 # def para iniciar el bot
 def start(update, context):
     try:
-        update.message.reply_text('¡Hola! Bienvenido(a), soy un bot que te ayudará a visualizar'
-                                  ' lo impresionante que es el universo con sus estrellas'
-                                  ' y constelaciones. %s %s\n\nSi quieres ver qué puedo hacer '
-                                  'solamente tienes que ejecutar el comando /menu.' % (u'\U0001F60A', u'\U0001F31F'))
+        message = '¡Hola! Bienvenido(a), soy un bot que te ayudará a visualizar ' \
+                  'lo impresionante que es el universo con sus estrellas ' \
+                  'y constelaciones. También puedo ayudarte a resolver relaciones ' \
+                  'de recurrencia. 😊🌟\n\nSi quieres ver qué puedo hacer, ' \
+                  'solamente tienes que ejecutar el comando /menu.'
+        update.message.reply_text(message)
     except Exception as e:
-        print('Error en start: ', e)
+        print('Error en start:', e)
 
 # def para mostrar el menú
 def menu(update, context):
     update.message.reply_text(main_menu_message(),
                               reply_markup=main_menu_keyboard())
 
-
 # -------------------- Keyboards -------------------------
 # def para mostrar el menú principal
-def main_menu_keyboard():
+def main_menu_estrellitas():
     keyboard = [
         [InlineKeyboardButton('Las estrellas', callback_data='stars')],
         [InlineKeyboardButton('Estrellas y una constelación', callback_data='constellation')],
@@ -51,12 +50,20 @@ def constellation_menu_keyboard():
     ]
     return InlineKeyboardMarkup(keyboard)
 
+def main_menu_keyboard():
+    menup = [
+            [InlineKeyboardButton('Estrellitas', callback_data='estrellitas')],
+            [InlineKeyboardButton('Relaciones de Recurrencia', callback_data='RR')]
+    ]
+    return InlineKeyboardMarkup(menup)
 
 # ----------------- Messages ----------------
 #  Mensaje para el menú principal
 def main_menu_message():
     return 'Por favor, hazme saber qué te gustaría ver %s:' % u'\U0001F914'
 
+def main_menu_message_stars():
+    return 'Cuentame, ¿qué te gustaría ver? %s:' % u'\U0001F914'
 # Mensaje para el menú de constelaciones
 def constellation_menu_message():
     return '''Selecciona el botón correspondiente a la constelación que deseas ver: 
@@ -105,6 +112,17 @@ def ver_constelacion(update, context):
                                      " deseas que te muestre %s:" % u'\U0001F914')
         update.callback_query.message.reply_text(text=constellation_menu_message(),
                                                  reply_markup=constellation_menu_keyboard())
+    except Exception as e:
+        print('Error:', e)
+
+# def para mostrar menu si estrella o RR
+def stars(update, context):
+    try:
+        chat_id = update.callback_query.message.chat.id
+        query = update.callback_query
+        query.edit_message_text(text="Ahora necesito que me indiques que quieres ver en las estrellas %s:" % u'\U0001F914')
+        update.callback_query.message.reply_text(text=main_menu_message_stars(),
+                                                 reply_markup=main_menu_estrellitas())
     except Exception as e:
         print('Error:', e)
 
