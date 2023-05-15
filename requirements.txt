@@ -1,4 +1,4 @@
 matplotlib==3.6.2
 Pillow==9.5.0
-python-telegram-bot==20.3
+python-telegram-bot==13.7
 sympy==1.11.1
