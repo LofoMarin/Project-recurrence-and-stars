@@ -1,5 +1,5 @@
 from telegram import InlineKeyboardButton, InlineKeyboardMarkup
-from telegram.ext import ConversationHandler
+from telegram.ext import ConversationHandler, CommandHandler, CallbackQueryHandler, MessageHandler, filters
 import os.path
 from model import Modelo
 from recurrencia import *
@@ -15,7 +15,7 @@ def start(update, context):
         message = '¡Hola! Bienvenido(a), soy un bot que te ayudará a visualizar ' \
                   'lo impresionante que es el universo con sus estrellas ' \
                   'y constelaciones. También puedo ayudarte a resolver relaciones ' \
-                  'de recurrencia. 😊🌟\n\nSi quieres ver qué puedo hacer, ' \
+                  'de recurrencia tanto homogeneas como no homgeneas. 😊🌟\n\nSi quieres ver qué puedo hacer, ' \
                   'solamente tienes que ejecutar el comando /menu.'
         update.message.reply_text(message)
     except Exception as e:
@@ -30,8 +30,8 @@ def menu(update, context):
 # def para mostrar el menú principal
 def main_menu_estrellitas():
     keyboard = [
-        [InlineKeyboardButton('Las estrellas', callback_data='stars')],
-        [InlineKeyboardButton('Estrellas y una constelación', callback_data='constellation')],
+        [InlineKeyboardButton('Las Estrellitas', callback_data='stars')],
+        [InlineKeyboardButton('Las Estrellitas y una Constelacion', callback_data='constellation')],
         [InlineKeyboardButton('Quiero ver las estrellas y constelaciones', callback_data='all')]
     ]
     return InlineKeyboardMarkup(keyboard)
@@ -80,7 +80,6 @@ def constellation_menu_message():
                 7.  Osa Mayor
                 8.  Osa Menor'''
 
-
 # --------------------------------------------------------
 # ----------------- Callbacks ----------------------------
 # def para mostrar las estrellas
@@ -88,7 +87,7 @@ def ver_estrellas(update, context):
     try:
         query = update.callback_query
         chat_id = query.message.chat.id
-        query.edit_message_text(text="¡Listo! Te mostraré las estrellas.")
+        query.edit_message_text(text="Aqui te muestro las estrellas 🌠")
         if not os.path.isfile('generated/stars.png'):
             m.plot_stars()
         context.bot.send_photo(chat_id, open('generated/stars.png', 'rb'))
@@ -191,6 +190,7 @@ def help(update, context):
     update.message.reply_text(text='¡Hola! Soy el bot de Astronomía. '
                                    'Puedes usar los siguientes comandos:\n'
                                    '/start: Inicia la conversación con el bot.\n'
+                                   '/menu: Muestra el menú de opciones.\n'
                                    '/help: Muestra los comandos disponibles.\n')
 
 RECURRENCE, INITIAL_VALUES = range(2)
@@ -209,7 +209,7 @@ f(n) = c_1*f(n-1) + c_2*f(n-2) + ... + g(n)    '''
     context.bot.send_message(chat_id=update.effective_chat.id, text=response)
     return RECURRENCE
 
-def render_latex(equation):
+def latex_img(equation):
     '''
     Render a equation in latex
     '''
@@ -225,7 +225,7 @@ def render_latex(equation):
 
     return imagen_bytes
 
-def get_initial_values(update, context):
+def valores_iniciales(update, context):
     '''
     Initial values input
     '''
@@ -241,7 +241,7 @@ def get_initial_values(update, context):
     parsed_function = 'f(n) =' + sp.latex(sp.parse_expr(function_from_user))
 
     # Transform the parsed function to image (latex rendered)
-    img = render_latex(parsed_function)
+    img = latex_img(parsed_function)
     context.bot.send_photo(chat_id=update.effective_chat.id, photo=img)
 
     response_2 = '''
@@ -252,7 +252,7 @@ f(0) = 1, f(1) = 2, ...
 
     return INITIAL_VALUES
 
-def show_rsolved(update, context):
+def rsol_mostrar(update, context):
     '''
     Show final result
     '''
@@ -265,17 +265,12 @@ def show_rsolved(update, context):
     solution = solve_recurrence(function_from_user, initial_conditions)
 
     response_1 = '''
-    🤓🧠 The non-recurring form of the function is:
+    🧠 La no recurrente es:
     '''
     context.bot.send_message(chat_id=update.effective_chat.id, text=response_1)
 
-    img = render_latex(solution)
+    img = latex_img(solution)
     context.bot.send_photo(chat_id=update.effective_chat.id, photo=img)
-
-    response_2 = '''
-    Incredible, isn't it?
-    '''
-    context.bot.send_message(chat_id=update.effective_chat.id, text=response_2)
 
     return ConversationHandler.END
 
@@ -286,4 +281,11 @@ def cancel_rsolve(update, context):
 
     response = "❌ Cancelled!"
     context.bot.send_message(chat_id=update.effective_chat.id, text=response)
-    return ConversationHandler.END
+
+def prueba(update, context):
+    '''
+    Prueba
+    '''
+
+    response = ("Por favor dale click aqui %s /rsolve" % u'\U0001f449')
+    context.bot.send_message(chat_id=update.effective_chat.id, text=response)

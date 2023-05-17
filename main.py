@@ -11,6 +11,7 @@ def main():
     # que es manejado por la función start
     dispatcher.add_handler(CommandHandler('start', bot.start))
     dispatcher.add_handler(CommandHandler('menu', bot.menu))
+    dispatcher.add_handler(CallbackQueryHandler(bot.prueba, pattern='RR'))
     dispatcher.add_handler(CallbackQueryHandler(bot.stars, pattern='estrellitas'))
     dispatcher.add_handler(CallbackQueryHandler(bot.ver_todas, pattern='all'))
     dispatcher.add_handler(CallbackQueryHandler(bot.ver_constelacion, pattern='constellation'))
@@ -24,9 +25,9 @@ def main():
     entry_points=[CommandHandler('rsolve', rsolve)],
     states={
         RECURRENCE: [MessageHandler(
-            filters.Filters.text & ~filters.Filters.command, get_initial_values)],
+            filters.Filters.text & ~filters.Filters.command, valores_iniciales)],
         INITIAL_VALUES: [MessageHandler(
-            filters.Filters.text & ~filters.Filters.command, show_rsolved)]
+            filters.Filters.text & ~filters.Filters.command, rsol_mostrar)]
     },
     fallbacks=[CommandHandler('cancel', cancel_rsolve)],
     )
@@ -34,7 +35,6 @@ def main():
 
     updater.start_polling()
     updater.idle()
-
 
 if __name__ == '__main__':
     main()
