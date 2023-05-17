@@ -1,7 +1,7 @@
 from config import TOKEN
-from telegram.ext import Updater, CommandHandler, CallbackQueryHandler
+from telegram.ext import Updater, CommandHandler, CallbackQueryHandler, filters, MessageHandler, ConversationHandler
 import bot
-import recurrencia
+from bot import *
 
 def main():
     updater = Updater(TOKEN, use_context=True)
@@ -17,14 +17,21 @@ def main():
     dispatcher.add_handler(CallbackQueryHandler(bot.ver_estrellas, pattern='stars'))
     dispatcher.add_handler(CallbackQueryHandler(bot.cargar_constelacion))
 
-    # # Comandos relacionados con relaciones de recurrencia
-    # dispatcher.add_handler(CommandHandler('recurrence_menu', bot.recurrence_menu))
-    # dispatcher.add_handler(CommandHandler('calculate_sequence', recurrencia.calculate_sequence))
-    # dispatcher.add_handler(CommandHandler('calculate_value', recurrencia.calculate_value))
-    # dispatcher.add_handler(CommandHandler('calculate_limit', recurrencia.calculate_limit))
-
     # help
     dispatcher.add_handler(CommandHandler('help', bot.help))
+
+    recurrence_handler = ConversationHandler(
+    entry_points=[CommandHandler('rsolve', rsolve)],
+    states={
+        RECURRENCE: [MessageHandler(
+            filters.Filters.text & ~filters.Filters.command, get_initial_values)],
+        INITIAL_VALUES: [MessageHandler(
+            filters.Filters.text & ~filters.Filters.command, show_rsolved)]
+    },
+    fallbacks=[CommandHandler('cancel', cancel_rsolve)],
+    )
+    dispatcher.add_handler(recurrence_handler)
+
     updater.start_polling()
     updater.idle()
 

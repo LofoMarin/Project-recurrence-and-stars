@@ -1,7 +1,6 @@
 from matplotlib import pyplot as plt
 import PIL
 
-
 class Modelo:
 
     def __init__(self):
