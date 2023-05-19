@@ -201,10 +201,9 @@ def rsolve(update, context):
     '''
 
     response = '''
-    🔢 Enter the recurrence relation you want to solve. It has to be linear, homogeneous or non-homogeneous and with constant coefficients.
-
-Try to write the function this way:
-f(n) = c_1*f(n-1) + c_2*f(n-2) + ... + g(n)    '''
+    Ingresa la relacion de recurrencia que quieres resolver...
+    Recuerda que debe ser asi
+f(n) = 1*f(n-1) + 2*f(n-2) + ... + g(n)    '''
 
     context.bot.send_message(chat_id=update.effective_chat.id, text=response)
     return RECURRENCE
