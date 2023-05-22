@@ -195,15 +195,14 @@ def help(update, context):
 
 RECURRENCE, INITIAL_VALUES = range(2)
 
-def rsolve(update, context):
+def resolverr(update, context):
     '''
     Recurrence relation solver input
     '''
 
     response = '''
-    Ingresa la relacion de recurrencia que quieres resolver...
-    Recuerda que debe ser asi
-f(n) = 1*f(n-1) + 2*f(n-2) + ... + g(n)    '''
+    f(n) = 1*f(n-1) + 2*f(n-2) + ... + g(n)    
+    es la manera en la que debes escribir para resolver tu ecuación de recurrencia.'''
 
     context.bot.send_message(chat_id=update.effective_chat.id, text=response)
     return RECURRENCE
@@ -229,11 +228,6 @@ def valores_iniciales(update, context):
     Initial values input
     '''
 
-    response_1 = '''
-    You entered the following function:
-    '''
-    context.bot.send_message(chat_id=update.effective_chat.id, text=response_1)
-
     # Get the function from the user
     function_from_user = update.message.text.split("=")[1]
     context.chat_data['fn'] = function_from_user
@@ -244,8 +238,8 @@ def valores_iniciales(update, context):
     context.bot.send_photo(chat_id=update.effective_chat.id, photo=img)
 
     response_2 = '''
-    Now, give me the initial values like this:
-f(0) = 1, f(1) = 2, ...
+    f(0) = 1, f(1) = 2, ...
+    Asi es como debes escribir los valores iniciales de tu ecuación de recurrencia.
     '''
     context.bot.send_message(chat_id=update.effective_chat.id, text=response_2)
 
@@ -264,7 +258,7 @@ def rsol_mostrar(update, context):
     solution = solve_recurrence(function_from_user, initial_conditions)
 
     response_1 = '''
-    🧠 La no recurrente es:
+    La no recurrente es:
     '''
     context.bot.send_message(chat_id=update.effective_chat.id, text=response_1)
 
@@ -286,5 +280,5 @@ def prueba(update, context):
     Prueba
     '''
 
-    response = ("Por favor dale click aqui %s /rsolve" % u'\U0001f449')
+    response = ("Por favor dale click aqui %s /resolverr" % u'\U0001f449')
     context.bot.send_message(chat_id=update.effective_chat.id, text=response)

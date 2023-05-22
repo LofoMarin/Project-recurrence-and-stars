@@ -22,7 +22,7 @@ def main():
     dispatcher.add_handler(CommandHandler('help', bot.help))
 
     recurrence_handler = ConversationHandler(
-    entry_points=[CommandHandler('rsolve', rsolve)],
+    entry_points=[CommandHandler('resolverr', resolverr)],
     states={
         RECURRENCE: [MessageHandler(
             filters.Filters.text & ~filters.Filters.command, valores_iniciales)],
